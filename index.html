@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Noah's Casino - Plinko Game</title>
+  <title>Noah the Gambler - Blackjack</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #121212;
-      color: white;
+      color: #fff;
       margin: 0;
       padding: 0;
       text-align: center;
@@ -28,27 +28,40 @@
       margin: 20px;
     }
 
-    canvas {
-      border: 2px solid #fff;
-    }
-
-    button {
+    .game-container button {
       background-color: #28a745;
       color: white;
       font-size: 1.2em;
       padding: 10px 20px;
       border: none;
       cursor: pointer;
-      margin: 10px 0;
+      margin: 10px;
     }
 
-    button:hover {
+    .game-container button:hover {
       background-color: #218838;
     }
 
-    #currency {
+    #credits {
       font-size: 1.5em;
       margin-top: 10px;
+    }
+
+    .cards {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .card {
+      width: 60px;
+      height: 80px;
+      background-color: #fff;
+      margin: 0 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 5px;
     }
 
     footer {
@@ -58,127 +71,171 @@
       bottom: 0;
       width: 100%;
     }
+
+    #gameResult {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>Noah's Plinko Game</h1>
+    <h1>Noah the Gambler - Blackjack</h1>
   </header>
 
   <main>
     <div class="game-container">
-      <h2>Plinko Game</h2>
-      <p>Drop the ball and win some virtual currency!</p>
+      <h2>Blackjack Game</h2>
+      <p>Start with 100 credits and try your luck!</p>
 
-      <button onclick="dropBall()">Play Plinko</button>
+      <button onclick="startGame()">Start New Game</button>
+      <button onclick="hit()">Hit</button>
+      <button onclick="stand()">Stand</button>
 
-      <canvas id="plinkoBoard" width="500" height="500"></canvas>
+      <div class="cards" id="playerCards"></div>
+      <div class="cards" id="dealerCards"></div>
 
-      <p>Your current balance: <span id="currency">100</span> coins</p>
+      <p>Your current credits: <span id="credits">100</span> credits</p>
+      <p id="gameResult"></p>
     </div>
   </main>
 
   <footer>
-    <p>&copy; 2025 Noah's Casino</p>
+    <p>&copy; 2025 Noah the Gambler</p>
   </footer>
 
   <script>
-    // Set up initial values for the Plinko game and currency
-    let currency = 100;
-    let ball = { x: 250, y: 0, dx: 0, dy: 5 };
-    const canvas = document.getElementById("plinkoBoard");
-    const ctx = canvas.getContext("2d");
+    let credits = 100;
+    let deck = [];
+    let playerHand = [];
+    let dealerHand = [];
+    let isGameOver = false;
 
-    // Number of rows and columns for the Plinko board
-    const numRows = 5;
-    const numCols = 9;
-    const ballSize = 15;
-    const pegSize = 10;
-    const ballSpeed = 5;
+    // Create deck
+    function createDeck() {
+      deck = [];
+      const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
+      const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 
-    // Create the Plinko board
-    function createPlinkoBoard() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawPeaks();
+      for (let suit of suits) {
+        for (let value of values) {
+          deck.push({ value: value, suit: suit });
+        }
+      }
+      shuffle(deck);
     }
 
-    // Draw pegs on the Plinko board
-    function drawPeaks() {
-      ctx.fillStyle = "#fff";
-      for (let row = 0; row < numRows; row++) {
-        for (let col = 0; col < numCols; col++) {
-          const x = col * (canvas.width / numCols) + (canvas.width / numCols) / 2;
-          const y = row * (canvas.height / numRows) + (canvas.height / numRows) / 2;
-          ctx.beginPath();
-          ctx.arc(x, y, pegSize, 0, Math.PI * 2);
-          ctx.fill();
-        }
+    // Shuffle deck
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
       }
     }
 
-    // Drop the ball and update the currency
-    function dropBall() {
-      ball.y = 0;
-      ball.x = canvas.width / 2;
-      ball.dy = ballSpeed;
-
-      let interval = setInterval(function () {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        drawPeaks();
-
-        ball.y += ball.dy;
-
-        // Ball reaches the bottom of the board
-        if (ball.y > canvas.height) {
-          clearInterval(interval);
-          let result = Math.floor(Math.random() * 10) + 1; // Random result (slot number)
-          updateCurrency(result);
-        }
-
-        // Draw the ball
-        ctx.beginPath();
-        ctx.arc(ball.x, ball.y, ballSize, 0, Math.PI * 2);
-        ctx.fill();
-      }, 20);
-    }
-
-    // Update currency based on where the ball lands
-    function updateCurrency(slot) {
-      let prize = 0;
-      switch (slot) {
-        case 1:
-          prize = -10; // Lose some coins
-          break;
-        case 2:
-        case 3:
-          prize = 5; // Gain some coins
-          break;
-        case 4:
-        case 5:
-          prize = 10; // Gain more coins
-          break;
-        case 6:
-        case 7:
-          prize = -5; // Lose some coins
-          break;
-        case 8:
-        case 9:
-          prize = 15; // Big win!
-          break;
+    // Start a new game
+    function startGame() {
+      if (credits <= 0) {
+        document.getElementById('gameResult').textContent = "You're out of credits! Please refresh the page to restart.";
+        return;
       }
 
-      currency += prize;
-      if (currency < 0) currency = 0; // Prevent going below 0 coins
+      isGameOver = false;
+      playerHand = [dealCard(), dealCard()];
+      dealerHand = [dealCard(), dealCard()];
 
-      // Update the displayed currency
-      document.getElementById("currency").textContent = currency;
+      createDeck();
+
+      document.getElementById("playerCards").innerHTML = displayCards(playerHand);
+      document.getElementById("dealerCards").innerHTML = `<div class="card">?</div>` + displayCards([dealerHand[1]]);
+
+      document.getElementById("gameResult").textContent = '';
     }
 
-    // Initialize the board
-    createPlinkoBoard();
+    // Deal a card
+    function dealCard() {
+      return deck.pop();
+    }
+
+    // Display cards on the screen
+    function displayCards(hand) {
+      return hand.map(card => `<div class="card">${card.value} ${card.suit.charAt(0)}</div>`).join('');
+    }
+
+    // Calculate hand value
+    function calculateHand(hand) {
+      let total = 0;
+      let aceCount = 0;
+
+      for (let card of hand) {
+        if (card.value === 'A') {
+          aceCount++;
+          total += 11;
+        } else if (['K', 'Q', 'J'].includes(card.value)) {
+          total += 10;
+        } else {
+          total += parseInt(card.value);
+        }
+      }
+
+      // Adjust for aces
+      while (total > 21 && aceCount > 0) {
+        total -= 10;
+        aceCount--;
+      }
+
+      return total;
+    }
+
+    // Hit button function
+    function hit() {
+      if (isGameOver) return;
+
+      playerHand.push(dealCard());
+      document.getElementById("playerCards").innerHTML = displayCards(playerHand);
+
+      if (calculateHand(playerHand) > 21) {
+        endGame('bust');
+      }
+    }
+
+    // Stand button function
+    function stand() {
+      if (isGameOver) return;
+
+      while (calculateHand(dealerHand) < 17) {
+        dealerHand.push(dealCard());
+      }
+
+      document.getElementById("dealerCards").innerHTML = displayCards(dealerHand);
+      endGame();
+    }
+
+    // End the game and determine the result
+    function endGame(result = '') {
+      const playerTotal = calculateHand(playerHand);
+      const dealerTotal = calculateHand(dealerHand);
+
+      if (result === 'bust') {
+        document.getElementById("gameResult").textContent = `You bust! Dealer wins.`;
+        credits -= 10; // You lose 10 credits for busting
+      } else if (dealerTotal > 21) {
+        document.getElementById("gameResult").textContent = `Dealer busts! You win!`;
+        credits += 10; // You win 10 credits if dealer busts
+      } else if (playerTotal > dealerTotal) {
+        document.getElementById("gameResult").textContent = `You win!`;
+        credits += 10; // You win 10 credits
+      } else if (playerTotal < dealerTotal) {
+        document.getElementById("gameResult").textContent = `Dealer wins.`;
+        credits -= 10; // You lose 10 credits
+      } else {
+        document.getElementById("gameResult").textContent = `It's a tie.`;
+      }
+
+      isGameOver = true;
+      document.getElementById("credits").textContent = credits;
+    }
   </script>
-
 </body>
 </html>
-
