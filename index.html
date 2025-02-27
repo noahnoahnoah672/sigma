@@ -1,296 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Noah the Gambler - Blackjack</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #0f0f0f;
-      color: #fff;
-      margin: 0;
-      padding: 0;
-      text-align: center;
-      background-image: url('https://www.transparenttextures.com/patterns/black-linen.png');
-      background-size: cover;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noah's Casino</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #111;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+        }
 
-    header {
-      background-color: #333;
-      padding: 20px;
-    }
+        header {
+            background-color: #333;
+            padding: 20px;
+            text-align: center;
+        }
 
-    h1 {
-      font-size: 3em;
-      color: #ffcc00;
-      margin: 0;
-    }
+        h1 {
+            margin: 0;
+            font-size: 40px;
+            color: #fff;
+        }
 
-    .game-container {
-      margin: 20px auto;
-      padding: 20px;
-      max-width: 800px;
-      background-color: rgba(0, 0, 0, 0.7);
-      border-radius: 15px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    }
+        .menu {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
 
-    .game-container button {
-      background-color: #28a745;
-      color: white;
-      font-size: 1.2em;
-      padding: 10px 20px;
-      border: none;
-      cursor: pointer;
-      margin: 10px;
-      border-radius: 5px;
-    }
+        .menu a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px 20px;
+            background-color: #444;
+            border-radius: 5px;
+            font-size: 18px;
+        }
 
-    .game-container button:hover {
-      background-color: #218838;
-    }
+        .menu a:hover {
+            background-color: #ff6600;
+        }
 
-    #credits {
-      font-size: 1.5em;
-      margin-top: 10px;
-      color: #ffcc00;
-    }
+        .game-container {
+            display: none;
+            text-align: center;
+            padding: 50px;
+        }
 
-    .cards {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-      gap: 20px;
-    }
+        .game-container h2 {
+            font-size: 30px;
+        }
 
-    .card {
-      width: 70px;
-      height: 100px;
-      background-color: #fff;
-      margin: 0 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 5px;
-      font-size: 1.5em;
-      color: #333;
-      font-weight: bold;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
+        .game-buttons {
+            margin-top: 20px;
+        }
 
-    .card.ace {
-      background-color: #ffcc00;
-      color: #fff;
-    }
+        .game-buttons button {
+            padding: 10px 20px;
+            font-size: 18px;
+            margin: 5px;
+            background-color: #444;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+        }
 
-    .card.king, .card.queen, .card.jack {
-      background-color: #c0392b;
-      color: #fff;
-    }
-
-    .card.suits {
-      font-size: 0.8em;
-      color: #333;
-    }
-
-    footer {
-      background-color: #333;
-      padding: 10px;
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      color: #fff;
-    }
-
-    #gameResult {
-      margin-top: 20px;
-      font-size: 1.2em;
-      color: #ffcc00;
-    }
-
-    .button-container {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-
-    .casino-banner {
-      background-color: #111;
-      padding: 10px;
-      color: #ffcc00;
-      font-size: 1.2em;
-    }
-  </style>
+        .game-buttons button:hover {
+            background-color: #ff6600;
+        }
+    </style>
 </head>
 <body>
 
-  <header>
-    <h1>Noah the Gambler - Blackjack</h1>
-  </header>
+<header>
+    <h1>Noah's Casino</h1>
+</header>
 
-  <div class="casino-banner">
-    <p>Welcome to the ultimate Blackjack casino! Bet your credits and win big!</p>
-  </div>
+<div class="menu">
+    <a href="#" id="blackjack-link">Blackjack</a>
+    <a href="#" id="roulette-link">Roulette</a>
+    <a href="#" id="poker-link">Poker</a>
+</div>
 
-  <main>
-    <div class="game-container">
-      <h2>Blackjack Game</h2>
-      <p>Start with 100 credits. Try your luck!</p>
-
-      <div class="button-container">
-        <button onclick="startGame()">Start New Game</button>
+<!-- Blackjack Game -->
+<div id="blackjack-game" class="game-container">
+    <h2>Blackjack Game</h2>
+    <p id="blackjack-result">Let's play Blackjack!</p>
+    <div class="game-buttons">
+        <button onclick="startBlackjack()">Deal Cards</button>
         <button onclick="hit()">Hit</button>
         <button onclick="stand()">Stand</button>
-      </div>
-
-      <div class="cards" id="playerCards"></div>
-      <div class="cards" id="dealerCards"></div>
-
-      <p>Your current credits: <span id="credits">100</span> credits</p>
-      <p id="gameResult"></p>
     </div>
-  </main>
+</div>
 
-  <footer>
-    <p>&copy; 2025 Noah the Gambler - All Rights Reserved</p>
-  </footer>
+<!-- Roulette Game -->
+<div id="roulette-game" class="game-container">
+    <h2>Roulette Game</h2>
+    <p id="roulette-result">Let's play Roulette!</p>
+    <div class="game-buttons">
+        <button onclick="spinRoulette()">Spin the Wheel</button>
+    </div>
+</div>
 
-  <script>
-    let credits = 100;
-    let deck = [];
-    let playerHand = [];
-    let dealerHand = [];
-    let isGameOver = false;
+<!-- Poker Game -->
+<div id="poker-game" class="game-container">
+    <h2>Poker Game</h2>
+    <p id="poker-result">Let's play Poker!</p>
+    <div class="game-buttons">
+        <button onclick="dealPoker()">Deal Poker Hand</button>
+    </div>
+</div>
 
-    // Create deck
-    function createDeck() {
-      deck = [];
-      const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
-      const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+<script>
+// Blackjack game logic
+let blackjackPlayerHand = [];
+let blackjackDealerHand = [];
+let blackjackDeck = [];
 
-      for (let suit of suits) {
-        for (let value of values) {
-          deck.push({ value: value, suit: suit });
-        }
-      }
-      shuffle(deck);
-    }
+function startBlackjack() {
+    blackjackDeck = [];
+    blackjackPlayerHand = [];
+    blackjackDealerHand = [];
+    
+    const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
+    const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 
-    // Shuffle deck
-    function shuffle(array) {
-      for (let i = array.length - 1; i > 0; i--) {
+    suits.forEach(function(suit) {
+        values.forEach(function(value) {
+            blackjackDeck.push({ value: value, suit: suit });
+        });
+    });
+
+    shuffleDeck(blackjackDeck);
+
+    // Deal initial cards
+    blackjackPlayerHand.push(blackjackDeck.pop(), blackjackDeck.pop());
+    blackjackDealerHand.push(blackjackDeck.pop(), blackjackDeck.pop());
+
+    updateBlackjackUI();
+}
+
+function shuffleDeck(deck) {
+    for (let i = deck.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-      }
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+    }
+}
+
+function updateBlackjackUI() {
+    document.getElementById("blackjack-result").innerText = `Your hand: ${getHandString(blackjackPlayerHand)} | Dealer's hand: ${getHandString(blackjackDealerHand, true)}`;
+}
+
+function getHandString(hand, hideFirstCard = false) {
+    return hand.map((card, index) => hideFirstCard && index === 0 ? '??' : card.value + ' of ' + card.suit).join(', ');
+}
+
+function hit() {
+    blackjackPlayerHand.push(blackjackDeck.pop());
+    updateBlackjackUI();
+}
+
+function stand() {
+    // Dealer plays
+    while (getHandValue(blackjackDealerHand) < 17) {
+        blackjackDealerHand.push(blackjackDeck.pop());
     }
 
-    // Start a new game
-    function startGame() {
-      if (credits <= 0) {
-        document.getElementById('gameResult').textContent = "You're out of credits! Please refresh the page to restart.";
-        return;
-      }
+    const playerScore = getHandValue(blackjackPlayerHand);
+    const dealerScore = getHandValue(blackjackDealerHand);
 
-      isGameOver = false;
-      playerHand = [dealCard(), dealCard()];
-      dealerHand = [dealCard(), dealCard()];
-
-      createDeck();
-
-      document.getElementById("playerCards").innerHTML = displayCards(playerHand);
-      document.getElementById("dealerCards").innerHTML = `<div class="card">?</div>` + displayCards([dealerHand[1]]);
-
-      document.getElementById("gameResult").textContent = '';
+    let result = `You scored ${playerScore}. Dealer scored ${dealerScore}. `;
+    if (playerScore > 21) {
+        result += "You busted! Dealer wins!";
+    } else if (dealerScore > 21) {
+        result += "Dealer busted! You win!";
+    } else if (playerScore > dealerScore) {
+        result += "You win!";
+    } else if (dealerScore > playerScore) {
+        result += "Dealer wins!";
+    } else {
+        result += "It's a tie!";
     }
 
-    // Deal a card
-    function dealCard() {
-      return deck.pop();
-    }
+    document.getElementById("blackjack-result").innerText = result;
+}
 
-    // Display cards on the screen
-    function displayCards(hand) {
-      return hand.map(card => {
-        return `<div class="card ${card.value === 'A' ? 'ace' : ''} ${card.value === 'K' ? 'king' : ''} 
-        ${card.value === 'Q' ? 'queen' : ''} ${card.value === 'J' ? 'jack' : ''}">${card.value}</div>`;
-      }).join('');
-    }
-
-    // Calculate hand value
-    function calculateHand(hand) {
-      let total = 0;
-      let aceCount = 0;
-
-      for (let card of hand) {
+function getHandValue(hand) {
+    let value = 0;
+    let aceCount = 0;
+    hand.forEach(card => {
         if (card.value === 'A') {
-          aceCount++;
-          total += 11;
+            aceCount++;
+            value += 11;
         } else if (['K', 'Q', 'J'].includes(card.value)) {
-          total += 10;
+            value += 10;
         } else {
-          total += parseInt(card.value);
+            value += parseInt(card.value);
         }
-      }
+    });
 
-      // Adjust for aces
-      while (total > 21 && aceCount > 0) {
-        total -= 10;
+    while (value > 21 && aceCount > 0) {
+        value -= 10;
         aceCount--;
-      }
-
-      return total;
     }
 
-    // Hit button function
-    function hit() {
-      if (isGameOver) return;
+    return value;
+}
 
-      playerHand.push(dealCard());
-      document.getElementById("playerCards").innerHTML = displayCards(playerHand);
+// Roulette game logic
+function spinRoulette() {
+    const result = Math.floor(Math.random() * 37); // 0-36
+    document.getElementById("roulette-result").innerText = `The wheel landed on: ${result}`;
+}
 
-      if (calculateHand(playerHand) > 21) {
-        endGame('bust');
-      }
-    }
+// Poker game logic
+function dealPoker() {
+    const suits = ['Hearts', 'Diamonds', 'Clubs', 'Spades'];
+    const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+    let pokerDeck = [];
+    
+    suits.forEach(function(suit) {
+        values.forEach(function(value) {
+            pokerDeck.push({ value: value, suit: suit });
+        });
+    });
 
-    // Stand button function
-    function stand() {
-      if (isGameOver) return;
+    shuffleDeck(pokerDeck);
 
-      while (calculateHand(dealerHand) < 17) {
-        dealerHand.push(dealCard());
-      }
+    const hand = [pokerDeck.pop(), pokerDeck.pop(), pokerDeck.pop(), pokerDeck.pop(), pokerDeck.pop()];
+    const handString = hand.map(card => card.value + ' of ' + card.suit).join(', ');
+    
+    document.getElementById("poker-result").innerText = `Your Poker hand: ${handString}`;
+}
 
-      document.getElementById("dealerCards").innerHTML = displayCards(dealerHand);
-      endGame();
-    }
+// Functions to show game sections
+function showGame(game) {
+    const games = ['blackjack', 'roulette', 'poker'];
+    games.forEach(function(gameName) {
+        const gameContainer = document.getElementById(gameName + '-game');
+        if (gameName === game) {
+            gameContainer.style.display = 'block';
+        } else {
+            gameContainer.style.display = 'none';
+        }
+    });
+}
 
-    // End the game and determine the result
-    function endGame(result = '') {
-      const playerTotal = calculateHand(playerHand);
-      const dealerTotal = calculateHand(dealerHand);
+// Add event listeners to menu items
+document.getElementById('blackjack-link').addEventListener('click', function () {
+    showGame('blackjack');
+    startBlackjack(); // Start game when clicked
+});
 
-      if (result === 'bust') {
-        document.getElementById("gameResult").textContent = `You bust! Dealer wins.`;
-        credits -= 10; // You lose 10 credits for busting
-      } else if (dealerTotal > 21) {
-        document.getElementById("gameResult").textContent = `Dealer busts! You win!`;
-        credits += 10; // You win 10 credits if dealer busts
-      } else if (playerTotal > dealerTotal) {
-        document.getElementById("gameResult").textContent = `You win!`;
-        credits += 10; // You win 10 credits
-      } else if (playerTotal < dealerTotal) {
-        document.getElementById("gameResult").textContent = `Dealer wins.`;
-        credits -= 10; // You lose 10 credits
-      } else {
-        document.getElementById("gameResult").textContent = `It's a tie.`;
-      }
+document.getElementById('roulette-link').addEventListener('click', function () {
+    showGame('roulette');
+});
 
-      isGameOver = true;
-      document.getElementById("credits").textContent = credits;
-    }
-  </script>
+document.getElementById('poker-link').addEventListener('click', function () {
+    showGame('poker');
+});
+
+// Show Blackjack game by default
+showGame('blackjack');
+</script>
+
 </body>
 </html>
-
