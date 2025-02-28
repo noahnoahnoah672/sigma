@@ -3,27 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Personal Website</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Video Chat</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
             text-align: center;
-            padding: 50px;
+            padding: 20px;
         }
-        a {
-            color: blue;
-            text-decoration: none;
-            font-weight: bold;
+        section {
+            padding: 20px;
         }
-        a:hover {
-            color: red;
+        h1, h2 {
+            color: #4CAF50;
+        }
+        .video-chat-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 50px;
+        }
+        .video-chat-iframe {
+            width: 800px;
+            height: 600px;
+            border: none;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to My Personal Website</h1>
-    <p>Click on the word below to see what happens!</p>
-    <a href="https://cornhub.com" target="_blank">Surprise</a>
+
+    <header>
+        <h1>Welcome to Video Chat</h1>
+        <p>Connect with friends, family, or colleagues through video calls.</p>
+    </header>
+
+    <section>
+        <h2>About This Website</h2>
+        <p>This website provides an easy-to-use interface for video chat. You can connect with others directly through the embedded video chat service below. Simply click the button to start your call!</p>
+    </section>
+
+    <section class="video-chat-container">
+        <h2>Start a Video Call</h2>
+        <iframe class="video-chat-iframe" src="https://meet.google.com" title="Google Meet Video Call" allow="camera; microphone; fullscreen" loading="lazy"></iframe>
+    </section>
+
+    <footer>
+        <p>Video Chat - Connect Anytime, Anywhere</p>
+    </footer>
+
 </body>
 </html>
 
